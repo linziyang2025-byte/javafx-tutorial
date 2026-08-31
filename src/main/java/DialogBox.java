@@ -48,7 +48,7 @@ public class DialogBox extends HBox {
     }
 
     /**
-     * Reverses the dialog-box contents and aligns them to the left.
+     * Reverses the dialog-box contents and styles a Duke response.
      */
     private void flip() {
         ObservableList<Node> children =
@@ -59,6 +59,7 @@ public class DialogBox extends HBox {
         Collections.reverse(children);
         getChildren().setAll(children);
         setAlignment(Pos.TOP_LEFT);
+        dialog.getStyleClass().add("reply-label");
     }
 
     /**
