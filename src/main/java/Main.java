@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
- * Displays the JavaFX chat window.
+ * Displays the interactive JavaFX chat window.
  */
 public class Main extends Application {
     private ScrollPane scrollPane;
@@ -22,6 +22,12 @@ public class Main extends Application {
     private final Image userImage = new Image(
             getClass().getResourceAsStream("/images/DaUser.png")
     );
+
+    private final Image dukeImage = new Image(
+            getClass().getResourceAsStream("/images/DaDuke.png")
+    );
+
+    private final Duke duke = new Duke();
 
     /**
      * Sets up and displays the primary JavaFX stage.
@@ -36,12 +42,6 @@ public class Main extends Application {
 
         userInput = new TextField();
         sendButton = new Button("Send");
-
-        DialogBox dialogBox = new DialogBox(
-                "Hello!",
-                userImage
-        );
-        dialogContainer.getChildren().add(dialogBox);
 
         AnchorPane mainLayout = new AnchorPane();
         mainLayout.getChildren().addAll(
@@ -84,7 +84,40 @@ public class Main extends Application {
         AnchorPane.setLeftAnchor(userInput, 1.0);
         AnchorPane.setBottomAnchor(userInput, 1.0);
 
+        sendButton.setOnMouseClicked(
+                event -> handleUserInput()
+        );
+
+        userInput.setOnAction(
+                event -> handleUserInput()
+        );
+
+        dialogContainer.heightProperty().addListener(
+                observable -> scrollPane.setVvalue(1.0)
+        );
+
         stage.setScene(scene);
         stage.show();
+    }
+
+    /**
+     * Displays the user's message and Duke's response, then clears the input.
+     */
+    private void handleUserInput() {
+        String input = userInput.getText();
+        String response = duke.getResponse(input);
+
+        dialogContainer.getChildren().addAll(
+                DialogBox.getUserDialog(
+                        input,
+                        userImage
+                ),
+                DialogBox.getDukeDialog(
+                        response,
+                        dukeImage
+                )
+        );
+
+        userInput.clear();
     }
 }
