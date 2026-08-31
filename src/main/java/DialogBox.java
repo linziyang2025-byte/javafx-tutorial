@@ -1,5 +1,10 @@
+import java.io.IOException;
+import java.util.Collections;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -11,26 +16,35 @@ import javafx.scene.layout.HBox;
  * Displays one chat message together with the speaker's image.
  */
 public class DialogBox extends HBox {
-    private final Label text;
-    private final ImageView displayPicture;
+    @FXML
+    private Label dialog;
+
+    @FXML
+    private ImageView displayPicture;
 
     /**
-     * Creates a dialog box containing the given message and image.
+     * Loads the dialog-box view and fills it with the supplied content.
      *
      * @param message Message to display.
      * @param image Image representing the speaker.
      */
     private DialogBox(String message, Image image) {
-        text = new Label(message);
-        displayPicture = new ImageView(image);
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(
+                    MainWindow.class.getResource(
+                            "/view/DialogBox.fxml"
+                    )
+            );
 
-        text.setWrapText(true);
-        displayPicture.setFitWidth(100.0);
-        displayPicture.setFitHeight(100.0);
-        displayPicture.setPreserveRatio(true);
+            fxmlLoader.setController(this);
+            fxmlLoader.setRoot(this);
+            fxmlLoader.load();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
 
-        setAlignment(Pos.TOP_RIGHT);
-        getChildren().addAll(text, displayPicture);
+        dialog.setText(message);
+        displayPicture.setImage(image);
     }
 
     /**
@@ -42,7 +56,7 @@ public class DialogBox extends HBox {
                         getChildren()
                 );
 
-        FXCollections.reverse(children);
+        Collections.reverse(children);
         getChildren().setAll(children);
         setAlignment(Pos.TOP_LEFT);
     }
@@ -76,6 +90,7 @@ public class DialogBox extends HBox {
                 message,
                 image
         );
+
         dialogBox.flip();
         return dialogBox;
     }
